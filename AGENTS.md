@@ -15,10 +15,10 @@ palette on a soft gradient; rounded cards, generous whitespace, no shouty colour
 This file is the entry point for any new session. Everything you need to pick
 the work up is here or in the files it points to.
 
-The project folder may have been renamed to `voidrecll`. **Nothing in the code
-depends on the folder's name** — every script resolves paths relative to its own
-location, so a moved folder keeps working. If you find a path that breaks, it is
-a bug: fix it to be relative.
+The project lives in `~/Desktop/voidrecll`. **Nothing in the code depends on
+the folder's name** — every script resolves paths relative to its own
+location, so a moved folder keeps working. If you find a path that breaks, it
+is a bug: fix it to be relative.
 
 | Where | What |
 |---|---|
@@ -216,16 +216,18 @@ npm run build
 
 ## Renaming the project folder
 
-The folder was renamed from `Memory Cards Website` to `voidrecll`. Nothing in
-the code depends on the folder's name — every script resolves paths relative to
-its own location — so a move is safe. It was verified by running the build and
-the full check suite from a copy at the new path.
+The folder was renamed from `Memory Cards Website` to **`~/Desktop/voidrecll`**
+on 2026-11-08. Nothing in the code depends on the folder's name — every script
+resolves paths relative to its own location — so the move is safe. It was
+verified afterwards by running the build, the full check suite and the deploy
+from the new path, all of which passed.
 
 If you move it again:
 
 ```bash
-mv "/home/gafail/Desktop/Memory Cards Website" ~/Desktop/voidrecll
-cd ~/Desktop/voidrecll
+cd ~/Desktop
+mv voidrecll <new-name>
+cd <new-name>
 git status          # should be clean - git travels with the folder
 npm run build       # must still say 17/17 files
 npm run test:server # terminal 1
@@ -236,7 +238,7 @@ The one thing that *does* live outside the repo is the SSH key to the LXC box,
 at `~/Desktop/TheVoidCo/ops/keys/thevoidco-lxc-id_ed25519`. The deploy script
 looks for it there and can be pointed elsewhere with `VOIDRECLL_SSH_KEY`.
 
-A running AI session is keyed to the folder's path, so it will not survive the
+A running AI session is keyed to the folder's path, so it does not survive a
 move — start a fresh one in the new folder and it will read this file.
 
 ---
