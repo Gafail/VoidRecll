@@ -1,5 +1,5 @@
 /**
- * Shared helpers for the Mindful Words check suites.
+ * Shared helpers for the VoidRecll check suites.
  *
  * The suites boot the real app (the real js/app.js) inside a DOM harness and
  * point its fetch at a live local server, so the checks exercise the app
@@ -115,12 +115,12 @@ const cardWords = (doc) =>
   Array.from(doc.querySelectorAll(".card .word-text")).map((e) => e.textContent);
 
 const srsOf = (w, file = "words.json") =>
-  JSON.parse(w.localStorage.getItem(`mindful_srs_${file}`) || "{}");
+  JSON.parse(w.localStorage.getItem(`voidrecll_srs_${file}`) || "{}");
 
 const learnedOf = (w, file = "words.json") =>
-  JSON.parse(w.localStorage.getItem(`mindful_learned_${file}`) || "[]");
+  JSON.parse(w.localStorage.getItem(`voidrecll_learned_${file}`) || "[]");
 
-const statsOf = (w) => JSON.parse(w.localStorage.getItem("mindful_stats") || "{}");
+const statsOf = (w) => JSON.parse(w.localStorage.getItem("voidrecll_stats") || "{}");
 
 const errText = (w) => w.__errors.map((e) => (e && e.stack) || String(e)).join("\n");
 
@@ -164,7 +164,7 @@ async function ensureInReview(w, doc, word) {
   }
   srs[word].due = Date.now() - 1000;
   srs[word].lapsed = false;
-  w.localStorage.setItem("mindful_srs_words.json", JSON.stringify(srs));
+  w.localStorage.setItem("voidrecll_srs_words.json", JSON.stringify(srs));
 
   const isReview = doc.getElementById("reviewModeBtn").classList.contains("mode-btn-active");
   if (!isReview) {

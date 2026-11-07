@@ -1,12 +1,12 @@
 /*
- * Mindful Words - service worker
+ * VoidRecll - service worker
  *
  * Makes the app work offline. The app shell is precached on install; every
  * other same-origin request is served stale-while-revalidate, so a cached copy
  * is returned immediately while a fresh one is fetched in the background.
  */
 
-const VERSION = "mindful-words-v1";
+const VERSION = "voidrecll-v1";
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 

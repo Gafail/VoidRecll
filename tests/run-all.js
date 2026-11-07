@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Runs every Mindful Words check suite and prints a combined summary.
+ * Runs every VoidRecll check suite and prints a combined summary.
  *
  *   node tests/run-all.js
  *

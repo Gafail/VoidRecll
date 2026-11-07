@@ -1,4 +1,4 @@
-# Mindful Words — Project Review
+# VoidRecll — Project Review
 
 **Date:** 2026-11-07
 **Scope:** Full source review of `index.html`, `css/style.css`, `js/app.js`, `data/*`, `README.md`, `start.sh`, plus runtime verification in a DOM harness and headless-Firefox screenshots.

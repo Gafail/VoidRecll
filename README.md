@@ -1,4 +1,4 @@
-# Mindful Words - Dynamic Word Cards
+# VoidRecll - Dynamic Word Cards
 
 A flashcard app with spaced repetition. It learns 16 words at a time from any word
 set, then schedules each word so it comes back just before you would forget it.

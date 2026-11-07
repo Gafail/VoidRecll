@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# Mindful Words - Local Server Starter Script
+# VoidRecll - Local Server Starter Script
 # Auto-launches default browser and serves your word card app locally
 # =============================================================================
 
@@ -12,7 +12,7 @@ PORT=8000
 
 # Print header
 echo "=========================================="
-echo "  🎨 Mindful Words - Local Server"
+echo "  🎨 VoidRecll - Local Server"
 echo "=========================================="
 echo ""
 echo "Starting local development server..."

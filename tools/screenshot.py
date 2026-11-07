@@ -111,7 +111,13 @@ def wait_for_port(port, process, timeout=45):
     raise RuntimeError(f"Marionette did not open port {port} in time")
 
 
-def capture(url, out_path, delay, width, height, profile):
+def capture(url, out_path, delay, width, height, profile, dark=False, click=None):
+    if dark:
+        # Firefox reports the system theme through this pref. The app follows
+        # prefers-color-scheme, so this is what puts it into dark mode.
+        with open(os.path.join(profile, "user.js"), "w", encoding="utf8") as handle:
+            handle.write('user_pref("ui.systemUsesDarkTheme", 1);\n')
+
     process = subprocess.Popen(
         [
             FIREFOX,
@@ -141,6 +147,15 @@ def capture(url, out_path, delay, width, height, profile):
         )
         session.navigate(url)
         time.sleep(delay)
+
+        if click:
+            # open whatever the shot should show (a modal, a flipped card)
+            session.run_script(
+                "var el = document.querySelector(arguments[0]);"
+                "if (el) el.click();",
+                [click],
+            )
+            time.sleep(1.0)
 
         # Report what is actually on the page, so a capture of an empty view
         # cannot be mistaken for a working one.
@@ -175,6 +190,14 @@ def main():
     )
     parser.add_argument("--width", type=int, default=1280)
     parser.add_argument("--height", type=int, default=900)
+    parser.add_argument(
+        "--dark", action="store_true", help="render with the dark colour scheme"
+    )
+    parser.add_argument(
+        "--click",
+        default=None,
+        help="CSS selector to click before capturing (e.g. '#statsBtn')",
+    )
     args = parser.parse_args()
 
     if not FIREFOX:
@@ -184,7 +207,14 @@ def main():
     profile = tempfile.mkdtemp(prefix="mw-shot-")
     try:
         summary = capture(
-            args.url, args.out, args.delay, args.width, args.height, profile
+            args.url,
+            args.out,
+            args.delay,
+            args.width,
+            args.height,
+            profile,
+            dark=args.dark,
+            click=args.click,
         )
     except Exception as err:  # noqa: BLE001 - report and fail cleanly
         print(f"screenshot failed: {err}", file=sys.stderr)

@@ -122,7 +122,7 @@ const suite = (async () => {
   wordsToDue.forEach((w) => {
     srs[w] = { ef: 2.5, interval: 1, reps: 1, lapses: 0, due: Date.now() - 1000, last: Date.now() - DAY_MS, lapsed: false };
   });
-  gM.localStorage.setItem("mindful_srs_words.json", JSON.stringify(srs));
+  gM.localStorage.setItem("voidrecll_srs_words.json", JSON.stringify(srs));
 
   gMdoc.getElementById("reviewModeBtn").click();
   await wait(1200);
@@ -221,7 +221,7 @@ const suite = (async () => {
     const x = new Date(Date.now() - off * DAY_MS);
     return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
   };
-  gSt.localStorage.setItem("mindful_stats", JSON.stringify({
+  gSt.localStorage.setItem("voidrecll_stats", JSON.stringify({
     version: 1,
     sets: { "words.json": { reviews: 9, correct: 8, history: {
       [d(0)]: { reviews: 3, correct: 3 },
@@ -354,7 +354,7 @@ const suite = (async () => {
 
   const gMig = await boot("http://localhost:8477/index.html?set=words.json");
   gMig.localStorage.setItem("learned_words.json", JSON.stringify(["Serene", "Gentle"]));
-  gMig.localStorage.removeItem("mindful_srs_words.json");
+  gMig.localStorage.removeItem("voidrecll_srs_words.json");
   gMig.document.getElementById("refreshBtn").click();
   await wait(900);
   bug("regression: old progress is migrated into the new schedule",

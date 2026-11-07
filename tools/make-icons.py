@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates the Mindful Words app icons and social preview image.
+"""Generates the VoidRecll app icons and social preview image.
 
 Run from the project root:  python3 tools/make-icons.py
 The SVG favicon is hand-written (favicon.svg); this script renders the
@@ -57,6 +57,23 @@ def draw_mark(img):
     d.rounded_rectangle([sc(168), sc(330), sc(344), sc(386)], radius=sc(28), fill=TEAL)
 
 
+def fit_font(text, size, min_size, max_width):
+    """Picks the largest size (down to min_size) that fits within max_width.
+
+    The wordmark should fill the same space whatever the app is called, so a
+    rename does not leave a short name marooned in a wide empty area.
+    """
+    try:
+        while size > min_size:
+            font = ImageFont.truetype(FONT_BOLD, size)
+            if font.getbbox(text)[2] - font.getbbox(text)[0] <= max_width:
+                return font
+            size -= 2
+        return ImageFont.truetype(FONT_BOLD, min_size)
+    except OSError:
+        return ImageFont.load_default()
+
+
 def make_icon(size, name, maskable=False):
     img = gradient((size, size), MINT, SKY)
     if maskable:
@@ -86,14 +103,10 @@ def make_og():
     d.rounded_rectangle([956, 300, 1094, 342], radius=21, fill=TEAL)
 
     # wordmark
-    try:
-        title = ImageFont.truetype(FONT_BOLD, 74)
-        sub = ImageFont.truetype(FONT_BOLD, 30)
-    except OSError:
-        title = ImageFont.load_default()
-        sub = ImageFont.load_default()
+    title = fit_font("VoidRecll", 74, 90, 560)
+    sub = fit_font("Flashcards with spaced repetition", 30, 30, 560)
 
-    d.text((90, 190), "Mindful Words", font=title, fill=INK)
+    d.text((90, 190), "VoidRecll", font=title, fill=INK)
     d.text((90, 288), "Flashcards with spaced repetition", font=sub, fill=(90, 109, 126))
     d.text((90, 400), "Learn · Review · Remember", font=sub, fill=TEAL)
 

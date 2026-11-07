@@ -103,10 +103,10 @@
     }
   }
 
-  const srsKey = (setFile) => `mindful_srs_${setFile}`;
-  const learnedKey = (setFile) => `mindful_learned_${setFile}`;
+  const srsKey = (setFile) => `voidrecll_srs_${setFile}`;
+  const learnedKey = (setFile) => `voidrecll_learned_${setFile}`;
   const legacyLearnedKey = (setFile) => `learned_${setFile}`;
-  const STATS_KEY = "mindful_stats";
+  const STATS_KEY = "voidrecll_stats";
 
   // ===========================================================================
   // Learned words (kept for backwards compatibility with older progress data)
@@ -419,7 +419,7 @@
   // Init
   // ===========================================================================
   function init() {
-    console.log("🎨 Mindful Words initializing...");
+    console.log("🎨 VoidRecll initializing...");
 
     homeView = document.getElementById("homeView");
     gameView = document.getElementById("gameView");
@@ -1255,8 +1255,8 @@
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith("mindful_srs_")) known.add(key.slice("mindful_srs_".length));
-        if (key && key.startsWith("mindful_learned_")) known.add(key.slice("mindful_learned_".length));
+        if (key && key.startsWith("voidrecll_srs_")) known.add(key.slice("voidrecll_srs_".length));
+        if (key && key.startsWith("voidrecll_learned_")) known.add(key.slice("voidrecll_learned_".length));
       }
     } catch {
       // storage may be unavailable; the manifest entries still cover the rest
@@ -1270,7 +1270,7 @@
     });
 
     return {
-      app: "mindful-words",
+      app: "voidrecll",
       version: 1,
       exportedAt: new Date().toISOString(),
       sets,
@@ -1281,7 +1281,7 @@
   function exportProgress() {
     const payload = buildExportPayload();
     const json = JSON.stringify(payload, null, 2);
-    const filename = `mindful-words-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    const filename = `voidrecll-progress-${new Date().toISOString().slice(0, 10)}.json`;
 
     try {
       const blob = new Blob([json], { type: "application/json" });
@@ -1354,7 +1354,7 @@
 
   function applyImport(data) {
     if (!data || typeof data !== "object" || !data.sets || typeof data.sets !== "object") {
-      showToast("❌ That file is not a Mindful Words backup", null, null);
+      showToast("❌ That file is not a VoidRecll backup", null, null);
       return;
     }
 
