@@ -3,6 +3,10 @@
 A flashcard app with spaced repetition. It learns 16 words at a time from any word
 set, then schedules each word so it comes back just before you would forget it.
 
+> **Working on this project?** [`AGENTS.md`](AGENTS.md) is the handoff document:
+> what the project is, where it is deployed, how to deploy it, and the gotchas
+> that have bitten before. Read that first.
+
 ---
 
 ## Quick Start
