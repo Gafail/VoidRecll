@@ -1,0 +1,17 @@
+{
+  "name": "mindful-words",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Flashcards with spaced repetition - a static web app.",
+  "license": "MIT",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "test": "node tests/run-all.js",
+    "test:server": "node tests/run-server.js",
+    "build": "node tools/build.js",
+    "icons": "python3 tools/make-icons.py"
+  },
+  "devDependencies": {
+    "jsdom": "^31.0.0"
+  }
+}

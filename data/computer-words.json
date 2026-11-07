@@ -1,0 +1,122 @@
+[
+  {
+    "word": "Algorithm",
+    "meaning": "A step-by-step procedure for solving a problem or accomplishing a task"
+  },
+  {
+    "word": "Bandwidth",
+    "meaning": "The maximum rate of data transfer across a network path"
+  },
+  {
+    "word": "Cache",
+    "meaning": "A hardware or software component that stores data for faster future access"
+  },
+  {
+    "word": "Compiler",
+    "meaning": "A program that translates source code into machine code"
+  },
+  {
+    "word": "Database",
+    "meaning": "An organized collection of structured data stored electronically"
+  },
+  {
+    "word": "Debug",
+    "meaning": "The process of identifying and removing errors from software"
+  },
+  {
+    "word": "Encryption",
+    "meaning": "The process of encoding data so only authorized parties can access it"
+  },
+  {
+    "word": "Firewall",
+    "meaning": "A network security system that monitors and controls incoming/outgoing traffic"
+  },
+  {
+    "word": "Gateway",
+    "meaning": "A network node that connects two different networks together"
+  },
+  {
+    "word": "Hardware",
+    "meaning": "The physical components of a computer system"
+  },
+  {
+    "word": "Interface",
+    "meaning": "A point where two systems or subjects meet and interact"
+  },
+  {
+    "word": "Latency",
+    "meaning": "The delay before a transfer of data begins following an instruction"
+  },
+  {
+    "word": "Middleware",
+    "meaning": "Software that acts as a bridge between an operating system and applications"
+  },
+  {
+    "word": "Network",
+    "meaning": "A group of interconnected computers that share resources and information"
+  },
+  {
+    "word": "Operating System",
+    "meaning": "The system software that manages hardware and software resources"
+  },
+  {
+    "word": "Protocol",
+    "meaning": "A set of rules governing the exchange of data between devices"
+  },
+  {
+    "word": "Queue",
+    "meaning": "A data structure that follows FIFO (First In, First Out) order"
+  },
+  {
+    "word": "Recursion",
+    "meaning": "A technique where a function calls itself to solve smaller subproblems"
+  },
+  {
+    "word": "Server",
+    "meaning": "A computer or program that provides services to other computers"
+  },
+  {
+    "word": "Syntax",
+    "meaning": "The set of rules that define the structure of a programming language"
+  },
+  {
+    "word": "Token",
+    "meaning": "A piece of data that represents a user session or security credential"
+  },
+  {
+    "word": "Upload",
+    "meaning": "The action of transferring data from a local to a remote system"
+  },
+  {
+    "word": "Variable",
+    "meaning": "A named storage location in memory that holds a value"
+  },
+  {
+    "word": "Widget",
+    "meaning": "A small application or component with a specific graphical interface"
+  },
+  {
+    "word": "XML",
+    "meaning": "eXtensible Markup Language - a format for encoding documents"
+  },
+  {
+    "word": "YAML",
+    "meaning": "YAML Ain't Markup Language - a human-friendly data serialization format"
+  },
+  {
+    "word": "ZIP",
+    "meaning": "A file format for data compression and archiving"
+  },
+  {
+    "word": "API",
+    "meaning": "Application Programming Interface - a set of protocols for building software"
+  },
+  {
+    "word": "BIOS",
+    "meaning": "Basic Input/Output System - firmware that initializes hardware on startup"
+  },
+  {
+    "word": "CPU",
+    "meaning": "Central Processing Unit - the main processor that executes instructions"
+  }
+]

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>Mindful Words - Flashcards with Spaced Repetition</title>
+        <meta
+            name="description"
+            content="Learn word sets with spaced repetition. Grade each card Again, Hard, Good or Easy and Mindful Words schedules it for you."
+        />
+
+        <!-- Icons -->
+        <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="assets/favicon.svg" />
+        <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+        <link rel="manifest" href="manifest.webmanifest" />
+
+        <!-- Browser / platform chrome -->
+        <meta name="theme-color" content="#5a9a8a" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Mindful Words" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+        <!-- Social sharing -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Mindful Words" />
+        <meta property="og:title" content="Mindful Words - Flashcards with Spaced Repetition" />
+        <meta
+            property="og:description"
+            content="Learn word sets with spaced repetition. Grade each card Again, Hard, Good or Easy and the app schedules it for you."
+        />
+        <meta property="og:image" content="assets/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Mindful Words - Flashcards with Spaced Repetition" />
+        <meta
+            name="twitter:description"
+            content="Learn word sets with spaced repetition. Grade each card Again, Hard, Good or Easy and the app schedules it for you."
+        />
+        <meta name="twitter:image" content="assets/og-image.png" />
+
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="js/app.js" defer></script>
+    </head>
+    <body>
+        <div id="app">
+            <!-- Home Page View -->
+            <div id="homeView" class="home-view" style="display: none;">
+                <h1>Mindful Words</h1>
+                <p class="subtitle">Choose a word set to begin</p>
+                <div id="wordSetGrid" class="word-set-grid"></div>
+            </div>
+
+            <!-- Game View -->
+            <div id="gameView" class="container" style="display: none;">
+                <div class="header">
+                    <button id="backBtn" class="back-btn">← Back</button>
+                    <div class="header-center">
+                        <h1 id="setTitle">Breathe & Reflect</h1>
+                        <div id="progressIndicator" class="progress-indicator">
+                            <span id="progressText" aria-live="polite">0 of 0</span>
+                            <div
+                                class="progress-bar"
+                                role="progressbar"
+                                aria-labelledby="progressText"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                aria-valuenow="0"
+                            >
+                                <div id="progressFill" class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-buttons">
+                        <button id="refreshBtn" class="refresh-btn">🔄 More Words</button>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div class="mode-switch" role="tablist" aria-label="Study mode">
+                        <button
+                            id="learnModeBtn"
+                            class="mode-btn mode-btn-active"
+                            role="tab"
+                            aria-selected="true"
+                        >
+                            Learn
+                        </button>
+                        <button id="reviewModeBtn" class="mode-btn" role="tab" aria-selected="false">
+                            Review <span id="dueCount" class="due-badge">0</span>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-actions">
+                        <button id="statsBtn" class="tool-btn">📊 Stats</button>
+                        <button id="exportBtn" class="tool-btn">⬇ Export</button>
+                        <button id="importBtn" class="tool-btn">⬆ Import</button>
+                        <button id="unlearnBtn" class="unlearn-btn">Reset Set</button>
+                    </div>
+                </div>
+
+                <input type="file" id="importFile" accept="application/json,.json" hidden />
+
+                <div id="wordGrid" class="word-grid"></div>
+            </div>
+        </div>
+
+        <!-- Stats panel -->
+        <div id="statsModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="statsModalTitle">
+            <div class="modal-panel">
+                <div class="modal-head">
+                    <h2 id="statsModalTitle">Progress</h2>
+                    <button id="statsModalClose" class="modal-close" aria-label="Close">✕</button>
+                </div>
+                <div id="statsModalBody" class="modal-body"></div>
+            </div>
+        </div>
+
+        <!-- Toast container for undo notifications -->
+        <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+    </body>
+</html>

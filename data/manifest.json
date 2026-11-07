@@ -1,0 +1,22 @@
+{
+  "sets": [
+    {
+      "file": "words.json",
+      "displayName": "Mindful Words",
+      "description": "Calming, reflective vocabulary",
+      "icon": "🌿"
+    },
+    {
+      "file": "computer-words.json",
+      "displayName": "Computer Terms",
+      "description": "Tech and computing concepts",
+      "icon": "💻"
+    },
+    {
+      "file": "multiplication.json",
+      "displayName": "Multiplication",
+      "description": "1-12 times tables practice",
+      "icon": "🔢"
+    }
+  ]
+}
