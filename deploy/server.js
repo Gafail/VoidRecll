@@ -17,7 +17,6 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const url = require("url");
 
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || "127.0.0.1";
@@ -78,7 +77,8 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const pathname = url.parse(req.url).pathname || "/";
+  // WHATWG URL rather than the deprecated url.parse().
+  const pathname = new URL(req.url, `http://${req.headers.host || "localhost"}`).pathname;
   let file = resolveFile(pathname);
 
   if (!file) {
