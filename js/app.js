@@ -10,6 +10,15 @@
     manifestFile: "manifest.json",
     toastDuration: 5000,
     matureIntervalDays: 21,
+
+    // Ko-Fi support button, shown on the home screen.
+    // https://ko-fi.com/button - the code is the part after ko-fi.com/
+    koFi: {
+      label: "Support me on Ko-fi",
+      color: "#72a4f2",
+      code: "R5E3224KOP",
+      scriptUrl: "https://storage.ko-fi.com/cdn/widget/Widget_2.js",
+    },
   };
 
   const DAY_MS = 24 * 60 * 60 * 1000;
@@ -518,7 +527,55 @@
   async function showHomeView() {
     homeView.style.display = "block";
     gameView.style.display = "none";
+    loadKoFiWidget();
     await loadWordSets();
+  }
+
+  // ===========================================================================
+  // Ko-Fi support widget
+  //
+  // Loaded on the home screen only, so it does not get in the way while
+  // studying. The widget script comes from Ko-Fi's CDN, so it needs a network
+  // connection - offline, the button simply does not appear.
+  //
+  // The widget's own draw() calls document.writeln(). Browsers ignore
+  // document.write() from a script that loads after the page has finished
+  // parsing, which is exactly what happens here, so the markup is taken from
+  // the widget's getHTML() and inserted into the DOM instead.
+  // ===========================================================================
+  function loadKoFiWidget() {
+    const { label, color, code, scriptUrl } = CONFIG.koFi;
+    if (!code || !scriptUrl) return;
+    // the widget is only ever added once, however the home view is reached
+    if (document.getElementById("kofiWidget")) return;
+    if (document.querySelector(`script[src="${scriptUrl}"]`)) return;
+
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = scriptUrl;
+    script.async = true;
+
+    script.addEventListener("load", () => {
+      const widget = window.kofiwidget2;
+      if (!widget || typeof widget.getHTML !== "function") {
+        console.warn("⚠️ The Ko-Fi widget loaded but did not initialise.");
+        return;
+      }
+
+      widget.init(label, color, code);
+
+      const holder = document.createElement("div");
+      holder.id = "kofiWidget";
+      holder.className = "kofi-holder";
+      holder.innerHTML = widget.getHTML();
+      homeView.appendChild(holder);
+    });
+
+    script.addEventListener("error", () => {
+      console.warn("⚠️ The Ko-Fi widget could not be loaded.");
+    });
+
+    document.head.appendChild(script);
   }
 
   function showGameView() {

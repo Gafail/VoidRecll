@@ -112,6 +112,40 @@ const suite = (async () => {
   bug("P2-4 the precache list covers the word data", swDataMissing.length === 0,
     `missing: ${swDataMissing.join(", ")}`);
 
+  // every file the worker precaches must actually exist, or the install step
+  // rejects and the app never goes offline
+  const shellList = /const SHELL\s*=\s*\[([\s\S]*?)\];/.exec(swSrc);
+  const shellFiles = shellList
+    ? shellList[1].match(/"([^"]+)"/g).map((s) => s.replace(/"/g, "")).filter((f) => f !== "./")
+    : [];
+  const shellMissing = shellFiles
+    .filter((f) => !fs.existsSync(path.join(ROOT, f)))
+    .filter((f) => f !== "" && f !== "./");
+  bug("P2-4 every precached file exists on disk", shellMissing.length === 0,
+    `missing: ${shellMissing.join(", ")}`);
+  bug("P2-4 the precache list is not empty", shellFiles.length > 5,
+    `${shellFiles.length} files precached`);
+
+  // ================= P2-4b  BUILD OUTPUT =================
+  const buildSrc = fs.readFileSync(path.join(ROOT, "tools/build.js"), "utf8");
+  const buildList = /const FILES\s*=\s*\[([\s\S]*?)\];/.exec(buildSrc);
+  const buildFiles = buildList
+    ? buildList[1].match(/"([^"]+)"/g).map((s) => s.replace(/"/g, ""))
+    : [];
+  const buildMissing = buildFiles.filter((f) => !fs.existsSync(path.join(ROOT, f)));
+  bug("P2-4b every file in the build list exists", buildMissing.length === 0,
+    `missing: ${buildMissing.join(", ")}`);
+  const notInBuild = ["index.html", "js/app.js", "css/style.css", "sw.js", "manifest.webmanifest"]
+    .filter((f) => !buildFiles.includes(f));
+  bug("P2-4b the build list includes the core app files", notInBuild.length === 0,
+    `missing: ${notInBuild.join(", ")}`);
+  bug("P2-4b the build excludes the tests and tooling",
+    !buildFiles.some((f) => f.startsWith("tests/") || f.startsWith("tools/") || f.startsWith("docs/")),
+    "the deployed site should not ship the test harness");
+  bug("P2-4b node_modules and dist are gitignored",
+    /node_modules\//.test(fs.readFileSync(path.join(ROOT, ".gitignore"), "utf8")) &&
+    /dist\//.test(fs.readFileSync(path.join(ROOT, ".gitignore"), "utf8")));
+
   // ================= P2-5  DARK MODE =================
   const darkBlock = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{([\s\S]*?)\n\}/.exec(css);
   bug("P2-5 a dark mode block exists", !!darkBlock);
@@ -156,6 +190,62 @@ const suite = (async () => {
   bug("P2-9 the progress bar is a progressbar role", bar?.getAttribute("role") === "progressbar");
   bug("P2-9 the progress bar reports its value",
     bar?.getAttribute("aria-valuenow") === "0", `aria-valuenow = "${bar?.getAttribute("aria-valuenow")}"`);
+
+  // ================= P2-10  KO-FI SUPPORT BUTTON =================
+  const KO_FI_SCRIPT = "https://storage.ko-fi.com/cdn/widget/Widget_2.js";
+  const koFiScripts = hdoc.querySelectorAll(`script[src="${KO_FI_SCRIPT}"]`);
+  bug("P2-10 the home view loads the Ko-Fi widget script", koFiScripts.length === 1,
+    `${koFiScripts.length} script tag(s)`);
+  bug("P2-10 the Ko-Fi widget is initialised with the right label, colour and code",
+    home.__koFi?.label === "Support me on Ko-fi" &&
+    home.__koFi?.color === "#72a4f2" &&
+    home.__koFi?.code === "R5E3224KOP",
+    JSON.stringify(home.__koFi));
+
+  // The button has to be in the DOM, not just configured. The widget's own
+  // draw() uses document.writeln(), which browsers ignore for a script that
+  // loads after the page is parsed - so the app must use getHTML() instead.
+  const kofiButton = hdoc.querySelector("#kofiWidget .kofi-button");
+  bug("P2-10 the Ko-Fi button is rendered on the page", !!kofiButton,
+    kofiButton ? "found" : "no .kofi-button in the DOM");
+  bug("P2-10 the Ko-Fi button links to the right page",
+    kofiButton?.getAttribute("href") === "https://ko-fi.com/R5E3224KOP",
+    kofiButton?.getAttribute("href"));
+  bug("P2-10 the Ko-Fi button shows the right label",
+    (kofiButton?.textContent || "").trim() === "Support me on Ko-fi",
+    `"${(kofiButton?.textContent || "").trim()}"`);
+  bug("P2-10 the Ko-Fi button uses the right colour",
+    (kofiButton?.getAttribute("style") || "").includes("#72a4f2"),
+    kofiButton?.getAttribute("style"));
+  bug("P2-10 the app builds the button from getHTML(), not draw()",
+    home.__koFi?.usedGetHTML === true && home.__koFi?.usedDraw === false,
+    `getHTML: ${home.__koFi?.usedGetHTML}, draw: ${home.__koFi?.usedDraw}`);
+  bug("P2-10 the widget sits inside the home view, so it leaves with it",
+    !!hdoc.querySelector("#homeView #kofiWidget"),
+    "the holder should be a child of #homeView");
+
+  // the widget belongs on the home page only - it must not follow the user
+  // into a study session
+  const gameKoFi = gdoc.querySelectorAll(`script[src="${KO_FI_SCRIPT}"]`);
+  bug("P2-10 the study view does not load the Ko-Fi widget",
+    gameKoFi.length === 0 && g.__koFi === undefined && !gdoc.querySelector("#kofiWidget"),
+    `${gameKoFi.length} script tag(s), __koFi = ${JSON.stringify(g.__koFi)}`);
+
+  // the widget script is added by JS, not hard-coded into the page, so that it
+  // can be scoped to the home view
+  bug("P2-10 the widget is not hard-coded into index.html",
+    !html.includes("ko-fi.com"), "index.html should not contain a Ko-Fi script tag");
+
+  // the loader is guarded against adding the same script twice
+  const dup = await boot("http://localhost:8477/index.html", {
+    preScriptSrc: KO_FI_SCRIPT,
+  });
+  bug("P2-10 the Ko-Fi widget is not loaded a second time",
+    dup.__koFi === undefined &&
+    dup.document.querySelectorAll(`script[src="${KO_FI_SCRIPT}"]`).length === 1 &&
+    !dup.document.querySelector("#kofiWidget"),
+    `__koFi = ${JSON.stringify(dup.__koFi)}, ` +
+    `${dup.document.querySelectorAll(`script[src="${KO_FI_SCRIPT}"]`).length} script tag(s)`);
 
   // ================= REGRESSION =================
   bug("regression: no uncaught errors on the home view", home.__errors.length === 0,

@@ -9,7 +9,8 @@
     "test": "node tests/run-all.js",
     "test:server": "node tests/run-server.js",
     "build": "node tools/build.js",
-    "icons": "python3 tools/make-icons.py"
+    "icons": "python3 tools/make-icons.py",
+    "screenshot": "python3 tools/screenshot.py"
   },
   "devDependencies": {
     "jsdom": "^31.0.0"

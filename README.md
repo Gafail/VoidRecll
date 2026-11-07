@@ -58,6 +58,7 @@ which is how the app learns which words need more or less time.
   split between new / learning / familiar / mature
 - **Per-word reset** - the `↺` button on a card, or the list inside the stats panel
 - **Export / import** your progress as a JSON file, so you can move between devices
+- **A Ko-Fi support button** on the home screen, if you want to say thanks
 - Keyboard navigation (arrows to move between cards, Enter/Space to reveal, Escape to close)
 - Learnt words are tracked per set in the browser and every grade can be undone
 - Responsive (4 → 3 → 2 → 1 columns)
@@ -126,10 +127,89 @@ not appear on the home screen.**
 
 ## Deploying
 
-The app is a static site - no build step and no dependencies. It can be hosted
-anywhere that serves static files (GitHub Pages, Netlify, Vercel, Cloudflare
-Pages). Upload the whole folder and make sure `index.html` sits at the root of
-the deployed site.
+The app is a static site with no runtime dependencies. It can be hosted anywhere
+that serves static files (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
+
+```bash
+npm run build     # writes a clean copy of the site into dist/
+```
+
+Deploy the contents of `dist/` - it holds only what the browser needs, without
+the tests, tooling or docs. Make sure `index.html` sits at the root of the
+deployed site.
+
+> The service worker needs a secure origin, so use **https** (or `localhost`).
+> On plain http over a public host the app still works, but it will not go
+> offline.
+
+---
+
+## The Support Button
+
+The home screen carries a small **"Support me on Ko-fi"** button that links to the
+Ko-fi page for this project. It is a third-party widget, so it is loaded from
+Ko-fi's CDN and needs a network connection - offline, the button simply does not
+appear.
+
+Two details are worth knowing if you change it:
+
+- **It only appears on the home screen.** The study view is left alone, so the
+  button never gets in the way while you are revising. The app adds the widget
+  to the home view when that view is shown.
+- **The markup comes from `getHTML()`, not `draw()`.** Ko-fi's own `draw()` calls
+  `document.writeln()`, and browsers ignore `document.write()` from a script that
+  loads after the page has been parsed - which is exactly what happens when the
+  widget is added with JavaScript. The app therefore asks the widget for its
+  HTML and inserts it into the page itself.
+
+The settings live in one place, at the top of `js/app.js`:
+
+```js
+koFi: {
+  label: "Support me on Ko-fi",
+  color: "#72a4f2",
+  code: "R5E3224KOP",            // the part after ko-fi.com/
+  scriptUrl: "https://storage.ko-fi.com/cdn/widget/Widget_2.js",
+},
+```
+
+Change `code` to point the button at a different Ko-fi page, or set `code` to an
+empty string to switch the button off entirely.
+
+---
+
+## Development
+
+```bash
+npm install       # only needed for the test suites (jsdom)
+
+npm run test:server   # terminal 1 - serves the app on :8477
+npm test              # terminal 2 - runs all three check suites
+npm run build         # writes the deployable copy into dist/
+npm run icons         # regenerates assets/ from tools/make-icons.py
+npm run screenshot    # captures the app with a real browser into docs/
+```
+
+The check suites live in `tests/`. They boot the **real** app in a DOM harness
+and point its `fetch` at a live local server, so they exercise the app itself
+rather than a mock of it:
+
+| Suite | Covers |
+|-------|--------|
+| `tests/p0-regression.test.js` | Every bug fixed in the original pass - the dead keyboard handler, repeated-word refresh, learnt cards left in the DOM, the biased shuffle, invalid ARIA, the answer leaking to screen readers, unguarded storage writes, the toast crash |
+| `tests/p1-features.test.js` | The scheduler, Learn/Review modes, the grading bar, Undo, stats and streaks, per-word reset, export/import, and migration of old progress |
+| `tests/p2-app-shell.test.js` | Icons, SEO and social tags, the web app manifest, the service worker, dark mode, reduced motion, focus rings, live regions, and the Ko-fi support button |
+
+`tools/screenshot.py` drives Firefox over its built-in Marionette socket to
+capture the running app. It waits for the page to settle first, which matters
+here: the word sets are fetched asynchronously, so a screenshot taken at the
+load event (what Firefox's own `--screenshot` flag does) catches the page
+before the cards exist.
+
+```bash
+python3 tools/screenshot.py http://localhost:8477/index.html \
+    --out docs/screenshot-home.png --delay 4
+```
 
 ---
 
@@ -139,4 +219,5 @@ the deployed site.
   per-browser. Clearing site data resets it - use **Export** to back it up.
 - Progress from the older version of the app is migrated automatically on first
   load, so you do not lose anything.
-- The app works offline once loaded, but it is not yet installable as a PWA.
+- The app is installable as a PWA and keeps working offline once loaded.
+- The app follows your system's dark-mode and reduced-motion settings.

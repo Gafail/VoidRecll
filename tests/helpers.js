@@ -8,10 +8,49 @@
 
 const fs = require("fs");
 const path = require("path");
-const { JSDOM } = require("jsdom");
+const { JSDOM, requestInterceptor } = require("jsdom");
 
 const ROOT = path.resolve(__dirname, "..");
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Stubs the Ko-Fi widget script so the checks do not depend on a third-party
+ * CDN being reachable. The stub mirrors the real widget closely: its draw()
+ * calls document.writeln() exactly like the Ko-Fi script does, so the checks
+ * catch any code that relies on draw() to put the button on the page.
+ */
+const koFiInterceptor = requestInterceptor((request) => {
+  if (!request.url.includes("storage.ko-fi.com")) return undefined;
+  return new Response(
+    `
+      window.kofiwidget2 = {
+        init: function (label, color, code) {
+          window.__koFi = {
+            label: label,
+            color: color,
+            code: code,
+            usedGetHTML: false,
+            usedDraw: false
+          };
+        },
+        getHTML: function () {
+          if (window.__koFi) window.__koFi.usedGetHTML = true;
+          var k = window.__koFi || {};
+          return "<div class=btn-container><a title='Support me on ko-fi.com' " +
+            "class='kofi-button' style='background-color:" + (k.color || "") + ";' " +
+            "href='https://ko-fi.com/" + (k.code || "") + "' target='_blank'> " +
+            "<span class='kofitext'><img src='https://storage.ko-fi.com/cdn/cup-border.png' " +
+            "alt='Ko-fi donations' class='kofiimg'/>" + (k.label || "") + "</span></a></div>";
+        },
+        draw: function () {
+          if (window.__koFi) window.__koFi.usedDraw = true;
+          document.writeln(this.getHTML());
+        }
+      };
+    `,
+    { headers: { "Content-Type": "application/javascript" } }
+  );
+});
 
 const results = { bugs: [], gaps: [] };
 
@@ -33,16 +72,27 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
  * The <script> tag is stripped first: jsdom would fetch and execute app.js on
  * its own, and the manual eval below would then create a SECOND instance with
  * its own state. One instance only, like a real browser.
+ *
+ * options.preScriptSrc injects a <script> tag into <head> BEFORE the app
+ * starts. That is how the checks test guards that are supposed to notice an
+ * already-present script (the Ko-Fi widget is only loaded once).
  */
-async function boot(url) {
-  const html = fs
+async function boot(url, options = {}) {
+  let html = fs
     .readFileSync(path.join(ROOT, "index.html"), "utf8")
     .replace(/<script[^>]*src=["'][^"']*app\.js["'][^>]*><\/script>/i, "");
+
+  if (options.preScriptSrc) {
+    html = html.replace(
+      "</head>",
+      `<script src="${options.preScriptSrc}"></script></head>`
+    );
+  }
 
   const dom = new JSDOM(html, {
     url,
     runScripts: "dangerously",
-    resources: "usable",
+    resources: { interceptors: [koFiInterceptor] },
     pretendToBeVisual: true,
   });
 

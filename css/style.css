@@ -87,6 +87,13 @@ body {
     justify-content: center;
 }
 
+/* Ko-Fi support button, injected into the home view by the app. */
+.kofi-holder {
+    display: flex;
+    justify-content: center;
+    margin-top: 36px;
+}
+
 .set-card {
     background: var(--card-bg);
     border-radius: var(--radius-lg);
