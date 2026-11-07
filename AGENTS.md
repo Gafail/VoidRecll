@@ -241,6 +241,24 @@ move — start a fresh one in the new folder and it will read this file.
 
 ---
 
+## Decisions already made
+
+These were settled deliberately. Do not quietly reverse them.
+
+| Decision | Why |
+|---|---|
+| The name is **VoidRecll**, with the double-l | Chosen over "VoidRecall" on purpose. It matches the sibling projects' `Void*` naming (`VoidFlippr`, `VoidWalkr`) |
+| The word set stays called **"Mindful Words"** | It is one of the three sets the app ships — a themed vocabulary set, not the app's name |
+| `localStorage` keys are `voidrecll_*` | Renamed with the project. Progress under the old `mindful_*` keys was deliberately **not** carried over |
+| The word sets live in **`content/`** | `data/` collides with the host's convention for writable state and would be silently dropped on deploy |
+| The Ko-fi button is **home page only** | It should not follow the user into a study session. It lives inside `#homeView` |
+| The widget is built from **`getHTML()`** | `draw()` uses `document.write()`, which browsers ignore for a script loaded after parsing |
+| **No CI on GitHub** | Deliberately skipped. GitHub is the backup, not a build server. A workflow file also needs the `workflow` OAuth scope, which this token does not carry |
+| **GitHub is the backup, not the host** | The site is served by the LXC box on the LAN. No domain yet, and nothing is exposed publicly |
+| The app keeps the house **Node + nginx** model | Measured as heavier than serving the files from nginx directly, but it keeps `appctl status`, `appctl logs` and the landing page working as the host documents |
+
+---
+
 ## Still open
 
 Listed as P3 in [`REVIEW.md`](REVIEW.md) and tracked by the test suite as
