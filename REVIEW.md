@@ -1,7 +1,7 @@
 # VoidRecll — Project Review
 
 **Date:** 2026-11-07
-**Scope:** Full source review of `index.html`, `css/style.css`, `js/app.js`, `data/*`, `README.md`, `start.sh`, plus runtime verification in a DOM harness and headless-Firefox screenshots.
+**Scope:** Full source review of `index.html`, `css/style.css`, `js/app.js`, `content/*`, `README.md`, `start.sh`, plus runtime verification in a DOM harness and headless-Firefox screenshots.
 
 **Verdict:** The core idea is solid and the app is deployable as-is — it is a pure static site with no build step. What was missing was (1) a small set of real bugs, (2) the entire *memory* half of a memory-cards app, and (3) app-shell polish that makes a deployed URL feel like a finished product.
 
@@ -39,7 +39,7 @@
 ### README corrections applied
 
 - **"15 words" → 16** (matches `CONFIG.wordCount`).
-- **"Automatically detect any new JSON files" → removed.** Sets are manifest-driven, so the README now shows the required `data/manifest.json` entry and states plainly that a JSON file not listed there will not appear.
+- **"Automatically detect any new JSON files" → removed.** Sets are manifest-driven, so the README now shows the required `content/manifest.json` entry and states plainly that a JSON file not listed there will not appear.
 - **"Responsive (4 → 2 → 1 columns)" → "4 → 3 → 2 → 1"** (matches the CSS breakpoints).
 - Added a note that the app must be served over HTTP (it fetches its word sets), and a short **Deploying** section.
 

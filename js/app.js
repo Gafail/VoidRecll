@@ -6,7 +6,7 @@
   // ===========================================================================
   const CONFIG = {
     wordCount: 16,
-    dataFolder: "./data/",
+    dataFolder: "./content/",
     manifestFile: "manifest.json",
     toastDuration: 5000,
     matureIntervalDays: 21,

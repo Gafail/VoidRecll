@@ -108,7 +108,7 @@ const suite = (async () => {
     .filter((f) => !swSrc.includes(f));
   bug("P2-4 the precache list covers the core app files", swMissing.length === 0,
     `missing: ${swMissing.join(", ")}`);
-  const swDataMissing = ["data/manifest.json", "data/words.json"].filter((f) => !swSrc.includes(f));
+  const swDataMissing = ["content/manifest.json", "content/words.json"].filter((f) => !swSrc.includes(f));
   bug("P2-4 the precache list covers the word data", swDataMissing.length === 0,
     `missing: ${swDataMissing.join(", ")}`);
 

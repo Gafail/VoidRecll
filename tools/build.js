@@ -21,10 +21,10 @@ const FILES = [
   "sw.js",
   "css/style.css",
   "js/app.js",
-  "data/manifest.json",
-  "data/words.json",
-  "data/computer-words.json",
-  "data/multiplication.json",
+  "content/manifest.json",
+  "content/words.json",
+  "content/computer-words.json",
+  "content/multiplication.json",
   "assets/favicon.svg",
   "assets/icon-192.png",
   "assets/icon-512.png",
@@ -32,7 +32,16 @@ const FILES = [
   "assets/icon-maskable-512.png",
   "assets/apple-touch-icon.png",
   "assets/og-image.png",
+  // Not for the browser - the LXC host runs this to serve the files above.
+  "deploy/server.js",
 ];
+
+// Files that land somewhere other than their source path in the build.
+// The server has to sit at the root of the build, because it serves the
+// directory it lives in.
+const RENAMED = {
+  "deploy/server.js": "server.js",
+};
 
 fs.rmSync(OUT, { recursive: true, force: true });
 
@@ -43,7 +52,7 @@ for (const rel of FILES) {
     console.warn(`⚠️  missing, skipped: ${rel}`);
     continue;
   }
-  const to = path.join(OUT, rel);
+  const to = path.join(OUT, RENAMED[rel] || rel);
   fs.mkdirSync(path.dirname(to), { recursive: true });
   fs.copyFileSync(from, to);
   copied += 1;
@@ -51,3 +60,4 @@ for (const rel of FILES) {
 
 console.log(`✅ Built ${copied}/${FILES.length} files into ${path.relative(ROOT, OUT)}/`);
 console.log("   Deploy this directory - it contains no tests, tooling or docs.");
+console.log("   It also carries deploy/server.js, which the LXC host runs to serve the site.");

@@ -26,7 +26,7 @@ Then open **http://localhost:8000**
 
 ## How It Works
 
-1. **Home page** - Shows all available word sets (from `data/manifest.json`)
+1. **Home page** - Shows all available word sets (from `content/manifest.json`)
 2. **Pick a set** - Click any card to load that word set
 3. **Learn or Review** - Two modes:
    - **Learn** shows words you have never studied, plus any word you marked "Again"
@@ -68,18 +68,22 @@ which is how the app learns which words need more or less time.
 
 ## Adding New Word Sets
 
-Word sets live in the `data/` folder. Two things are needed for a set to show up:
+Word sets live in the `content/` folder. Two things are needed for a set to show up:
 
-1. **The data file** - `data/your-new-set.json`
-2. **A manifest entry** - add it to `data/manifest.json`
+1. **The data file** - `content/your-new-set.json`
+2. **A manifest entry** - add it to `content/manifest.json`
 
 ```
-data/
+content/
 ├── manifest.json        (the list of available sets)
 ├── words.json           (mindful words)
 ├── computer-words.json  (tech terms)
 └── your-new-set.json    (your custom words)
 ```
+
+> The folder is called `content/` rather than `data/` on purpose. On the LXC host
+> that serves this app, `data/` is reserved for an app's writable state and is
+> excluded when deploying — so a `data/` folder here would be silently dropped.
 
 Each data file is an array of objects:
 
@@ -141,6 +145,32 @@ deployed site.
 > The service worker needs a secure origin, so use **https** (or `localhost`).
 > On plain http over a public host the app still works, but it will not go
 > offline.
+
+---
+
+## Live Deployment
+
+The app is running on a dedicated LXC container on the LAN:
+
+> **http://192.168.100.198/**
+
+It is LAN-only for now - there is no domain, and no public exposure. The
+container follows the house model described in `~/Desktop/Local-LXC-Host.md`:
+one app slot (`voidrecll`) behind nginx, with a systemd instance from the
+`webapp@.service` template.
+
+Deploy a change with:
+
+```bash
+./deploy/deploy-lxc.sh
+```
+
+The full runbook, including the gotchas, is in [`deploy/README.md`](deploy/README.md).
+
+> Two things to know about the LAN URL: the service worker needs a secure
+> origin, so over plain http the app runs **without** offline support and
+> without the install prompt, and the word sets live in `content/` rather than
+> `data/` so that the host's deploy tooling cannot silently drop them.
 
 ---
 

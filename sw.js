@@ -20,10 +20,10 @@ const SHELL = [
   "./assets/icon-192.png",
   "./assets/icon-512.png",
   "./assets/apple-touch-icon.png",
-  "./data/manifest.json",
-  "./data/words.json",
-  "./data/computer-words.json",
-  "./data/multiplication.json",
+  "./content/manifest.json",
+  "./content/words.json",
+  "./content/computer-words.json",
+  "./content/multiplication.json",
 ];
 
 self.addEventListener("install", (event) => {
